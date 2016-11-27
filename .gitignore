@@ -1,2 +1,11 @@
 *.pdf
-emotiondetection/*
+emotiondetection/features_fbank_htk_dim120.zip
+emotiondetection/features_labels_lld.zip
+emotiondetection/features_labels_raw_wav.zip
+emotiondetection/features_mfcc_csv_dim39.zip
+emotiondetection/fbank/*
+emotiondetection/features_labels_lld/*
+emotiondetection/features_labels_raw_wav/*
+emotiondetection/mfcc_csv/*
+emotiondetection/Presentation.pdf
+emotiondetection/The+INTERSPEECH+2009+Emotion+Challenge.pdf
