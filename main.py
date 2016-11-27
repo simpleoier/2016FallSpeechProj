@@ -47,7 +47,12 @@ def readData(lldFeatscpFile, lldLabelscpFile, nrows):
     lldFeatscp.close()
     lldLabelscp.close()
 
-    return lldX, lldY
+    np.random.seed(1234)
+    p = np.random.permutation(lldX.shape[0])
+    lldXp = lldX[p]
+    lldYp = lldY[p]
+
+    return lldXp, lldYp
 
 def DNN_def(nLayers, nodesPerLayer):
     Param = namedtuple('Param', ["weight", "bias"])
@@ -103,8 +108,12 @@ if __name__=="__main__":
     nodesPerLayer = 1024
     batchsize = 256
 
-    train_iter = mx.io.NDArrayIter(lldTrainX, lldTrainY, batch_size = batchsize)
-    test_iter = mx.io.NDArrayIter(lldTestX, lldTestY, batch_size = batchsize)
+    #train_iter = mx.io.NDArrayIter(lldTrainX, lldTrainY, batch_size = batchsize)
+    #test_iter  = mx.io.NDArrayIter(lldTestX, lldTestY, batch_size = batchsize)
+    train_iter = mx.io.NDArrayIter(lldTrainX, batch_size = batchsize)
+    test_iter  = mx.io.NDArrayIter(lldTestX, batch_size = batchsize)
+    train_iter.label = mx.io._init_data(lldTrainY, allow_empty=True, default_name='softmax_label')
+    test_iter.label  = mx.io._init_data(lldTestY, allow_empty=True, default_name='softmax_label')
 
     sym = DNN_def(nLayers, nodesPerLayer)
     #module = mx.mod.Module(sym)
