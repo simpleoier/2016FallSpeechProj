@@ -1,6 +1,10 @@
 # 2016FallSpeechProj
 Speech Emotion Recognition Project for Speech Processing Class in Autumn 2016
 
+# Prepare Data
+Download Datadir emotiondetection from FTP as emotiondetection
+Enter the emotiondetection and extract the compressed files, expecially the one named ##features_labels_lld.zip##
+
 ! Attention:
 --------------------------------------------------
 we mainly use $Python$ to complete this project.  
