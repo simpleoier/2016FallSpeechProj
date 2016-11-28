@@ -24,39 +24,42 @@ class Data:
 		#print tp
 
 	def __init__(self, tp):
-		self.type=tp
+		self.type = tp
 		#print tp
 		#load_data()
 		
 	def load_training_data(self):
 		''' load data from files
 		'''
-		print self.type
+		print "Train Data Type:%s" % self.type
 		if self.type=='lld':
-			self.feature=self.load_lld('./Data/features_labels_lld/lld/train/')
-			self.label=self.load_label('./Data/features_labels_lld/labels/train.txt')
+			self.feature_train = self.load_lld('./Data/features_labels_lld/lld/train/')
+			self.label_train = self.load_label('./Data/features_labels_lld/labels/train.txt')
 		else:
 			# TODO:other features
 			pass
 
+		print "Training: %d utterances with %d labels" % (self.feature_train.shape[0], self.label_train.shape[0])
+
 	def load_test_data(self):
 		''' load data from files
 		'''
-		print self.type
+		print "Test Data Type:%s" % self.type
 		if self.type=='lld':
-			self.feature_test=self.load_lld('./Data/features_labels_lld/lld/test/')
-			self.label_test=self.load_label('./Data/features_labels_lld/labels/test.txt')
+			self.feature_test = self.load_lld('./Data/features_labels_lld/lld/test/')
+			self.label_test = self.load_label('./Data/features_labels_lld/labels/test.txt')
 		else:
 			# TODO:other features
 			pass
+		print "Testing: %d utterances with %d labels" % (self.feature_test.shape[0], self.label_test.shape[0])
 
 	def load_lld(self,lld_dir):
 		name_list=os.listdir(lld_dir)
 		feature=np.zeros((len(name_list),384))
 		for index,name in enumerate(name_list):
-			lld_name=lld_dir+name
-			lld=np.loadtxt(open(lld_name,'rb'),delimiter=',')
-			feature[index,:]=lld.T
+			lld_name = lld_dir+name
+			lld = np.loadtxt(open(lld_name,'rb'),delimiter=',')
+			feature[index,:] = lld.T
 
 		return feature
 
@@ -69,4 +72,3 @@ class Data:
 			[label[index,0],label[index,1]]=[cdict[c],np.float(p)]
 		
 		return label
-	
