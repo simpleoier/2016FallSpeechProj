@@ -27,7 +27,8 @@ def DNN_def(nLayers, nodesPerLayer):
         next_layer_z = mx.sym.FullyConnected(data=hidden, num_hidden=nodesPerLayer,
                                              name="Linear%d" % (i+1))
         hidden = mx.sym.Activation(next_layer_z, act_type="relu", name="Activation%d"%(i+1))
-    hidden = mx.sym.FullyConnected(data = hidden ,num_hidden=5, name="output")
+
+    hidden = mx.sym.FullyConnected(data=hidden, num_hidden=5, name="outputLayer")
     sm = mx.sym.SoftmaxOutput(data=hidden, label=label, ignore_label=0, use_ignore=False,
                               name='softmax')
     return sm
@@ -60,13 +61,21 @@ if __name__=="__main__":
     lld = Data('lld')
     lld.load_training_data()
     lld.load_test_data()
+    # Permutation
+    np.random.seed(1234)
+    p = np.random.permutation(lld.feature_train.shape[0])
+    X = lld.feature_train[p]
+    Y = lld.label_train[p]
+    lld.feature_train = X
+    lld.label_train = Y
 
     # Define Network Architectures
-    nLayers = 2
+    nLayers = 3
     nodesPerLayer = 1024
     batchsize = 256
     sym = DNN_def(nLayers, nodesPerLayer)
 
+    # MXNet Iterator initialization
     #train_iter = mx.io.NDArrayIter(lld.feature_train, lld.label_train[:, 0], batch_size = batchsize)
     #test_iter  = mx.io.NDArrayIter(lld.feature_test, lld.label_test[:, 0], batch_size = batchsize)
     train_iter = mx.io.NDArrayIter(lld.feature_train, batch_size = batchsize)
@@ -74,9 +83,9 @@ if __name__=="__main__":
     test_iter  = mx.io.NDArrayIter(lld.feature_test, batch_size = batchsize)
     train_iter.label = mx.io._init_data(lld.label_train[:, 0], allow_empty=True, default_name='softmax_label')
     test_iter.label  = mx.io._init_data(lld.label_test[:, 0], allow_empty=True, default_name='softmax_label')
-    # train_iter.next()
-    # print train_iter.getdata()[0].asnumpy()[:10,0]
-    
+    #train_iter.next()
+    #print train_iter.getdata()[0].shape, train_iter.getlabel()[0].shape
+    #print train_iter.getdata()[0].asnumpy()[:10,0], train_iter.getlabel()[0].asnumpy()[:10]
 
     # Training the Model
     '''
@@ -101,3 +110,4 @@ if __name__=="__main__":
 
     # print model.predict(train_iter)
     print model.score(test_iter)*100, "%"
+    print model.predict(test_iter).shape
